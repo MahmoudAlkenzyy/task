@@ -42,7 +42,7 @@ export default function Home() {
           </tr>
         </thead>
         <tbody>
-          {fullCustomersInfo?.map((cust, idx) => {
+          {sortingCustomer?.map((cust, idx) => {
             return (
               <tr key={idx}>
                 <th>
