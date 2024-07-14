@@ -10,5 +10,7 @@ export async function getData() {
     };
   } = await axios.get("https://mahmoudalkenzyy.github.io/json-server/data.json");
 
+  console.log(data);
+
   return data;
 }
