@@ -1,10 +1,4 @@
-export default function SortingBar({
-  sort,
-  setSort,
-}: {
-  sort: string;
-  setSort: React.Dispatch<React.SetStateAction<string>>;
-}) {
+export default function SortingBar({ sort, setSort }) {
   return (
     <div className="d-flex justify-content-end py-3">
       <div className="btn-group text-end" role="group" aria-label="Basic example">

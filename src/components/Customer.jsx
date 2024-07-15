@@ -2,10 +2,10 @@ import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import useData from "../hooks/useData";
 import { useParams } from "react-router-dom";
+import { eachDayOfInterval, format, subDays } from "date-fns";
 
-// Function to aggregate data by date for a selected customer
 const aggregateDataByDate = (transactions, selectedCustomerId) => {
-  const filteredData = transactions?.filter((transaction) => transaction.customer_id === selectedCustomerId);
+  const filteredData = transactions?.filter((transaction) => transaction.customer_id == selectedCustomerId);
   const aggregatedData = filteredData?.reduce((acc, curr) => {
     const { date, amount } = curr;
     if (!acc[date]) {
@@ -14,26 +14,32 @@ const aggregateDataByDate = (transactions, selectedCustomerId) => {
     acc[date] += amount;
     return acc;
   }, {});
-
-  return Object?.keys(aggregatedData)?.map((date) => ({
-    date,
+  if (aggregatedData === undefined) return;
+  return Object.keys(aggregatedData).map((date) => ({
+    date: format(date, "MMM dd"),
     totalAmount: aggregatedData[date],
+    allDates: allDates.map((date) => {
+      return format(date, "MMM dd");
+    }),
   }));
 };
-
-// Select a customer (e.g., customer with ID 3)
-
+const allDates = eachDayOfInterval({
+  start: subDays(new Date("2022-01-02"), 1),
+  end: new Date(),
+});
 const Customer = () => {
-  const { id: selectedCustomerId } = useParams();
-  const { transactions } = useData();
-  console.log(transactions);
+  const { id } = useParams();
 
-  const aggregatedData = aggregateDataByDate(transactions ? transactions : [], selectedCustomerId);
+  const { transactions } = useData();
+
+  const aggregatedData = aggregateDataByDate(transactions, id);
+
+  console.log(aggregatedData);
   return (
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
       <LineChart width={600} height={300} data={aggregatedData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
+        <XAxis dataKey="allDates" />
         <YAxis />
         <Tooltip />
         <Legend />
