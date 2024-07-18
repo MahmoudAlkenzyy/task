@@ -1,10 +1,13 @@
 import { useState } from "react";
 import useData from "../hooks/useData";
 import SortingBar from "./SortingBar";
-import { Link } from "react-router-dom";
+import Customer from "./Customer";
+import SearchInput from "./SearchingBar";
 
 export default function Home() {
-  const [sort, setSort] = useState("name");
+  const [sort, setSort] = useState("amount");
+  const [id, setId] = useState(1);
+  const [search, setSearch] = useState("");
   const { customers, transactions, isLoading } = useData();
 
   if (isLoading) return <div>Loading......</div>;
@@ -13,7 +16,7 @@ export default function Home() {
     trans.name = customers?.find((cust) => cust.id === trans.customer_id)?.name;
     return trans;
   });
-  const sortingCustomer = fullCustomersInfo?.sort(
+  let sortingCustomer = fullCustomersInfo?.sort(
     sort === "name"
       ? function (a, b) {
           if (a?.name < b?.name) {
@@ -28,9 +31,15 @@ export default function Home() {
           return a.amount - b.amount;
         }
   );
+  console.log(customers);
+  sortingCustomer = sortingCustomer?.filter((cat) => cat.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="container">
+      <div>
+        <Customer id={id} />
+      </div>
+      <SearchInput searchTearm={search} setSearchTearm={setSearch} />
       <SortingBar sort={sort} setSort={setSort} />
       <table className="table table-striped">
         <thead>
@@ -46,9 +55,15 @@ export default function Home() {
             return (
               <tr key={idx}>
                 <th>
-                  <Link to={`/customer/${cust.customer_id}`} className="text-decoration-none text-dark-emphasis">
+                  <span
+                    to={`/customer/${cust.customer_id}`}
+                    className="text-decoration-none text-dark-emphasis"
+                    onClick={() => {
+                      setId(cust.customer_id);
+                    }}
+                  >
                     {cust?.name}
-                  </Link>
+                  </span>
                 </th>
                 <th>{cust.amount}</th>
                 <th>{cust.date}</th>

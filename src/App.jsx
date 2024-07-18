@@ -1,5 +1,5 @@
 import "./App.css";
-import { Customer, Home, Layout } from "./components/index";
+import { Home, Layout } from "./components/index";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -11,10 +11,6 @@ const router = createHashRouter([
       {
         index: true,
         element: <Home />,
-      },
-      {
-        path: "customer/:id",
-        element: <Customer />,
       },
     ],
   },
